@@ -58,5 +58,6 @@ $route['logout']               = 'user/logout';
 $route['admin']                = 'admin/dashboard';
 $route['user/account-type']        = 'user/select_account';
 $route['user/register-personal']   = 'user/register_personal';
+$route['user/register-business']   = 'user/register_business';
 
 $route['sitemap\.xml']         = 'sitemap';

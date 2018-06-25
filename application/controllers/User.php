@@ -418,20 +418,97 @@ class User extends Public_Controller {
 	  */
 
 	  function register_personal() {
+		$this->form_validation->set_error_delimiters($this->config->item('error_delimeter_left'), $this->config->item('error_delimeter_right'));
+		$this->form_validation->set_rules('username', lang('users input username'), 'required|trim|min_length[5]|max_length[30]|callback__check_username');
+		$this->form_validation->set_rules('email', lang('users input email'), 'required|trim|max_length[256]|valid_email|callback__check_email');
+        $this->form_validation->set_rules('first_name', lang('users input first_name'), 'required|trim|min_length[2]|max_length[32]');
+		$this->form_validation->set_rules('last_name', lang('users input last_name'), 'required|trim|min_length[2]|max_length[32]');
+		$this->form_validation->set_rules('birthday', lang('users input birthday'), 'required|trim');	
+		$this->form_validation->set_rules('residential_address1', lang('users input residential address'), 'required|trim'); 
+		$this->form_validation->set_rules('postal_code', lang('users input postal code'), 'required|trim'); 
+		$this->form_validation->set_rules('city', lang('users input city'), 'required|trim');
+		$this->form_validation->set_rules('province', lang('users input province'), 'required|trim');
+		$this->form_validation->set_rules('phone_number', lang('users input phone number'), 'required|trim');
+		$this->form_validation->set_rules('language', lang('users input language'), 'required|trim');
+        $this->form_validation->set_rules('password', lang('users input password'), 'required|trim|min_length[5]');
+		$this->form_validation->set_rules('password_repeat', lang('users input password_repeat'), 'required|trim|matches[password]');
+		
+		//your site secret key
+		$secret = $this->settings->google_secret;
+		//get verify response data
+		$verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$_POST['g-recaptcha-response']);
+		$responseData = json_decode($verifyResponse);
+
+		if ($this->form_validation->run() == TRUE) {
+			if ($responseData->success) {
+				$check_protect = $this->protect_username->check_username($this->input->post('username', TRUE));
+				if ($check_protect == TRUE) {
+					// save the changes
+					$validation_code = $this->users_model->create_profile($this->security->xss_clean($this->input->post()), $_SERVER["REMOTE_ADDR"]);
+					if ($validation_code) {
+						$email_template = $this->template_model->get_email_template(1);
+						if($email_template['status'] == "1") {
+
+							// build the validation URL
+							$encrypted_email = sha1($this->input->post('email', TRUE));
+							$validation_url  = base_url('user/validate') . "?e={$encrypted_email}&c={$validation_code}";
+
+							// variables to replace
+							$site_name = $this->settings->site_name;
+							$name_user = $this->input->post('first_name') . ' ' . $this->input->post('last_name');
+
+							$rawstring = $email_template['message'];
+
+							// what will we replace
+							$placeholders = array('[SITE_NAME]', '[CHECK_LINK]', '[NAME]');
+
+							$vals_1 = array($site_name, $validation_url, $name_user);
+
+							//replace
+							$str_1 = str_replace($placeholders, $vals_1, $rawstring);
+
+							$this -> email -> from($this->settings->site_email, $this->settings->site_name);
+							$this->email->to($this->input->post('email', TRUE));
+							//$this -> email -> to($user['email']);
+							$this -> email -> subject($email_template['title']);
+
+							$this -> email -> message($str_1);
+
+							$this->email->send();
+						}
+						$this->session->language = $this->input->post('language');
+						$this->lang->load('users', $this->user['language']);
+						$this->session->set_flashdata('message', sprintf(lang('users msg register_success'), $this->input->post('first_name', TRUE)));
+						redirect('login');
+					} else {
+						$this->session->set_flashdata('error', lang('users error register_failed'));
+						redirect($_SERVER['REQUEST_URI'], 'refresh');
+					}
+				} else {
+							
+					$this->session->set_flashdata('error', lang('users balanve info4'));
+					redirect($_SERVER['REQUEST_URI'], 'refresh');
+						
+				}
+			} else {
+						
+				$this->session->set_flashdata('error', lang('users error register_failed'));
+				redirect($_SERVER['REQUEST_URI'], 'refresh');
+					
+			}	
+		}
 		   // setup page header data
 		$this->set_title(lang('core personal create'));
 		$this->t_business = array('occupation'=>'Occupation','accounting'=>'Accounting','administration'=>'Administration','arts'=>'Arts, Culture','communication'=>'Communications');
 		$this->provinces = array('0'=>'Province', 'ab'=>'AB', 'bc'=>'BC', 'mb'=>'MB', 'nb'=>'NB', 'nl'=>'NL', 'ns'=>'NS', 'nu'=>'NU', 'nt'=>'NT', 'on'=>'ON', 'pe'=>'PE', 'qc'=>'QC', 'sk'=>'SK', 'yt'=>'YT');
 		$this->phone_types = array('1'=>'Home', '2'=>'Mobile');
-
+		
 		$data = $this->includes;
-				
-		 $user = array('d'=>'ddddd');
 
 		 // set content data
 		 $content_data = array(
 			 'cancel_url'        => base_url(),
-			 'user'              => $user,
+			 'user'              => NULL,
 			 'password_required' => TRUE
 		 );
  
@@ -439,6 +516,114 @@ class User extends Public_Controller {
 		 $data['content'] = $this->load->view('user/register_personal', $content_data, TRUE);
 		 $this->load->view($this->template, $data);
 	  }
+
+	  /**
+	  * Register Personal Account
+	  */
+
+	  function register_business() {
+		
+		$this->form_validation->set_error_delimiters($this->config->item('error_delimeter_left'), $this->config->item('error_delimeter_right'));
+		$this->form_validation->set_rules('username', lang('users input username'), 'required|trim|min_length[5]|max_length[30]|callback__check_username');
+		$this->form_validation->set_rules('email', lang('users input email'), 'required|trim|max_length[256]|valid_email|callback__check_email');
+        $this->form_validation->set_rules('first_name', lang('users input first_name'), 'required|trim|min_length[2]|max_length[32]');
+		$this->form_validation->set_rules('last_name', lang('users input last_name'), 'required|trim|min_length[2]|max_length[32]');
+		$this->form_validation->set_rules('birthday', lang('users input birthday'), 'required|trim');
+		$this->form_validation->set_rules('business_name', lang('users input business name'), 'required|trim');	
+		$this->form_validation->set_rules('phone_number', lang('users input business phonenumber'), 'required|trim');
+		$this->form_validation->set_rules('business_address', lang('users input business address'), 'required|trim'); 
+		$this->form_validation->set_rules('postal_code', lang('users input postal code'), 'required|trim'); 
+		$this->form_validation->set_rules('city', lang('users input city'), 'required|trim');
+		$this->form_validation->set_rules('province', lang('users input province'), 'required|trim');
+		
+        $this->form_validation->set_rules('password', lang('users input password'), 'required|trim|min_length[5]');
+		$this->form_validation->set_rules('password_repeat', lang('users input password_repeat'), 'required|trim|matches[password]');
+		
+		//your site secret key
+		$secret = $this->settings->google_secret;
+		//get verify response data
+		$verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$_POST['g-recaptcha-response']);
+		$responseData = json_decode($verifyResponse);
+
+		if ($this->form_validation->run() == TRUE) {
+			if ($responseData->success) {
+				$check_protect = $this->protect_username->check_username($this->input->post('username', TRUE));
+				if ($check_protect == TRUE) {
+					// save the changes
+					$validation_code = $this->users_model->create_profile($this->security->xss_clean($this->input->post()), $_SERVER["REMOTE_ADDR"], 2);
+					if ($validation_code) {
+						$email_template = $this->template_model->get_email_template(1);
+						if($email_template['status'] == "1") {
+
+							// build the validation URL
+							$encrypted_email = sha1($this->input->post('email', TRUE));
+							$validation_url  = base_url('user/validate') . "?e={$encrypted_email}&c={$validation_code}";
+
+							// variables to replace
+							$site_name = $this->settings->site_name;
+							$name_user = $this->input->post('first_name') . ' ' . $this->input->post('last_name');
+
+							$rawstring = $email_template['message'];
+
+							// what will we replace
+							$placeholders = array('[SITE_NAME]', '[CHECK_LINK]', '[NAME]');
+
+							$vals_1 = array($site_name, $validation_url, $name_user);
+
+							//replace
+							$str_1 = str_replace($placeholders, $vals_1, $rawstring);
+
+							$this -> email -> from($this->settings->site_email, $this->settings->site_name);
+							$this->email->to($this->input->post('email', TRUE));
+							//$this -> email -> to($user['email']);
+							$this -> email -> subject($email_template['title']);
+
+							$this -> email -> message($str_1);
+
+							$this->email->send();
+						}
+						$this->session->language = $this->input->post('language');
+						$this->lang->load('users', $this->user['language']);
+						$this->session->set_flashdata('message', sprintf(lang('users msg register_success'), $this->input->post('first_name', TRUE)));
+						redirect('login');
+					} else {
+						$this->session->set_flashdata('error', lang('users error register_failed'));
+						redirect($_SERVER['REQUEST_URI'], 'refresh');
+					}
+				} else {
+							
+					$this->session->set_flashdata('error', lang('users balanve info4'));
+					redirect($_SERVER['REQUEST_URI'], 'refresh');
+						
+				}
+			} else {
+						
+				$this->session->set_flashdata('error', lang('users error register_failed'));
+				redirect($_SERVER['REQUEST_URI'], 'refresh');
+					
+			}	
+		}
+
+		   // setup page header data
+		$this->set_title(lang('core business create'));
+		$this->t_business = array('occupation'=>'Occupation','accounting'=>'Accounting','administration'=>'Administration','arts'=>'Arts, Culture','communication'=>'Communications');
+		$this->provinces = array('0'=>'Province', 'ab'=>'AB', 'bc'=>'BC', 'mb'=>'MB', 'nb'=>'NB', 'nl'=>'NL', 'ns'=>'NS', 'nu'=>'NU', 'nt'=>'NT', 'on'=>'ON', 'pe'=>'PE', 'qc'=>'QC', 'sk'=>'SK', 'yt'=>'YT');
+		$this->phone_types = array('1'=>'Home', '2'=>'Mobile');
+		
+		$data = $this->includes;
+
+		 // set content data
+		 $content_data = array(
+			 'cancel_url'        => base_url(),
+			 'user'              => NULL,
+			 'password_required' => TRUE
+		 );
+ 
+		 // load views
+		 $data['content'] = $this->load->view('user/register_business', $content_data, TRUE);
+		 $this->load->view($this->template, $data);
+	  }
+
     /**
      * Registration Form
      */
@@ -672,6 +857,13 @@ class User extends Public_Controller {
      * PRIVATE VALIDATION CALLBACK FUNCTIONS
      **************************************************************************************/
 
+	/**
+	 * verify the birthday format
+	 */
+
+	function _check_birthdayformat($birthday) {
+		return false;
+	}
 
     /**
      * Verify the login credentials

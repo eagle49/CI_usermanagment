@@ -1,28 +1,35 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <style>
+    .card {
+        border-radius: 16px;
+    }
     .card-body {
         padding: 40px 50px 30px;
+        box-shadow: 0 0 2px 0 rgba(0,0,0,0.12), 0 2px 2px 0 rgba(0,0,0,0.24);
+        border-radius: 16px;
     }
     h4 {
         color: #0C8DC4;
     }
+    
     span.sub-head {
         font-size: 1.2rem;
         display: block;
     }
     p {
         line-height: 1.5em;
+        font-size: 15px;
     }
     ul li {
         min-height: 3em;
         line-height: 2;
         list-style-type: disc;
-        margin-left: 10px;
+        /* margin-left: 10px; */
         color: #666;
         font-size: 16px;
     }
 
-    .btn {
+    .card-body .btn {
         display: inline-block;
         padding: 9px 15px 10px;
         margin-bottom: 0;
@@ -39,7 +46,7 @@
         border-radius: 5px;
         box-sizing: border-box;
     }
-    .btn {
+    .card-body .btn {
         border-radius: 30px;
         font-size: 15px;
         font-size: 1.07142857rem;
@@ -51,13 +58,13 @@
         background: #0070ba;
     }
 
-    .btn:hover {
+    .card-body .btn:hover {
         background: #005ea6;
         text-decoration: none;
         color: white;
     }
 
-    .btn-medium {
+    .card-body .btn-medium {
         width: 100%;
         margin-bottom: 10px;
         outline: 0;
@@ -107,7 +114,7 @@
   <div class="col-md-6">
     <div class="card">
       <div class="card-body">
-        <h4>
+        <h4 style="margin-bottom: 22px;">
             Personal
             <span class="sub-head">For people who want to pay online</span>
         </h4>
@@ -139,9 +146,9 @@
             <li>Securely accept credit and Visa Debit card payments without a monthly fee*.</li>
             <li>Your buyers don’t need a PayPal account.</li>
             <li>Get paid faster with Online Invoicing and Express Checkout.</li>
-            <li>Sell securely with PayPal <a data-pa-click="account-selection|business|seller-protection-faq" href="https://www.paypal.com/ca/webapps/mpp/security/seller-protection-faq" pa-marked="1">Seller Protection</a>.</li>
+            <li>Sell securely with PayPal <a href="#" pa-marked="1">Seller Protection</a>.</li>
         </ul>
-        <a class="btn btn-medium btn-personal" href="#" >Sign Up for a Business Account</a>
+        <a class="btn btn-medium btn-personal" href="<?php echo base_url('user/register-business'); ?>" >Sign Up for a Business Account</a>
         <a class="contentLink" href="#" >Learn More</a>
         <p class="legal-notes center-text">**No monthly fee. 2.9% + 30 cents per transaction.</p>
       </div>

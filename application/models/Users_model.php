@@ -191,7 +191,7 @@ class Users_model extends CI_Model {
      * @param  array $data
      * @return mixed|boolean
      */
-    function create_profile($data=array(), $ip = NULL)
+    function create_profile($data=array(), $ip = NULL, $account_type = 1)
     {
         if ($data)
         {
@@ -199,40 +199,105 @@ class Users_model extends CI_Model {
             $salt            = hash('sha512', uniqid(mt_rand(1, mt_getrandmax()), TRUE));
             $password        = hash('sha512', $data['password'] . $salt);
             $validation_code = sha1(microtime(TRUE) . mt_rand(10000, 90000));
-
-            $sql = "
-                INSERT INTO {$this->_db} (
-                    username,
-                    password,
-                    salt,
-                    first_name,
-                    last_name,
-                    email,
-                    language,
-                    is_admin,
-                    status,
-                    deleted,
-                    validation_code,
-                    created,
-                    updated,
-                    ip_address
-                ) VALUES (
-                    " . $this->db->escape($data['username']) . ",
-                    " . $this->db->escape($password) . ",
-                    " . $this->db->escape($salt) . ",
-                    " . $this->db->escape($data['first_name']) . ",
-                    " . $this->db->escape($data['last_name']) . ",
-                    " . $this->db->escape($data['email']) . ",
-                    " . $this->db->escape($data['language']) . ",
-                    '0',
-                    '0',
-                    '0',
-                    " . $this->db->escape($validation_code) . ",
-                    '" . date('Y-m-d H:i:s') . "',
-                    '" . date('Y-m-d H:i:s') . "',
-                    " . $this->db->escape($ip) . "
-                )
-            ";
+            if ( $account_type ==1 ) {
+                $sql = "
+                    INSERT INTO {$this->_db} (
+                        username,
+                        password,
+                        salt,
+                        first_name,
+                        last_name,
+                        email,
+                        dob,
+                        t_business,
+                        business_name,
+                        address_1,
+                        zip,
+                        city,
+                        province,
+                        phone,
+                        is_admin,
+                        status,
+                        deleted,
+                        validation_code,
+                        created,
+                        updated,
+                        ip_address
+                    ) VALUES (
+                        " . $this->db->escape($data['username']) . ",
+                        " . $this->db->escape($password) . ",
+                        " . $this->db->escape($salt) . ",
+                        " . $this->db->escape($data['first_name']) . ",
+                        " . $this->db->escape($data['last_name']) . ",
+                        " . $this->db->escape($data['email']) . ",
+                        " . $this->db->escape($data['birthday']) . ",
+                        " . $this->db->escape($data['t_business']) . ",
+                        " . $this->db->escape($data['business_name']) . ",
+                        " . $this->db->escape($data['business_address']) . ",
+                        " . $this->db->escape($data['postal_code']) . ",
+                        " . $this->db->escape($data['city']) . ",
+                        " . $this->db->escape($data['province']) . ",
+                        " . $this->db->escape($data['phone_number']) . ",
+                        '0',
+                        '0',
+                        '0',
+                        " . $this->db->escape($validation_code) . ",
+                        '" . date('Y-m-d H:i:s') . "',
+                        '" . date('Y-m-d H:i:s') . "',
+                        " . $this->db->escape($ip) . "
+                    )
+                ";
+            } else {
+                $sql = "
+                    INSERT INTO {$this->_db} (
+                        username,
+                        password,
+                        salt,
+                        first_name,
+                        last_name,
+                        email,
+                        dob,
+                        t_business,
+                        address_1,
+                        address_2,
+                        zip,
+                        city,
+                        province,
+                        phone,
+                        language,
+                        is_admin,
+                        status,
+                        deleted,
+                        validation_code,
+                        created,
+                        updated,
+                        ip_address
+                    ) VALUES (
+                        " . $this->db->escape($data['username']) . ",
+                        " . $this->db->escape($password) . ",
+                        " . $this->db->escape($salt) . ",
+                        " . $this->db->escape($data['first_name']) . ",
+                        " . $this->db->escape($data['last_name']) . ",
+                        " . $this->db->escape($data['email']) . ",
+                        " . $this->db->escape($data['birthday']) . ",
+                        " . $this->db->escape($data['t_business']) . ",
+                        " . $this->db->escape($data['residential_address1']) . ",
+                        " . $this->db->escape($data['residential_address2']) . ",
+                        " . $this->db->escape($data['postal_code']) . ",
+                        " . $this->db->escape($data['city']) . ",
+                        " . $this->db->escape($data['province']) . ",
+                        " . $this->db->escape($data['phone_number']) . ",
+                        " . $this->db->escape($data['language']) . ",
+                        '0',
+                        '0',
+                        '0',
+                        " . $this->db->escape($validation_code) . ",
+                        '" . date('Y-m-d H:i:s') . "',
+                        '" . date('Y-m-d H:i:s') . "',
+                        " . $this->db->escape($ip) . "
+                    )
+                ";
+            }
 
             $this->db->query($sql);
 

@@ -68,7 +68,7 @@
 					<a href="<?php echo base_url('account/transactions'); ?>" class="btn btn-success my-2 my-sm-0"><?php echo lang('core button my_account'); ?></a>
 					<?php else : ?>
           <a href="<?php echo base_url('login'); ?>" class="btn btn-outline-light my-2 my-sm-0 mr-3"><?php echo lang('core button sign_in'); ?></a>
-          <a href="<?php echo base_url('user/register'); ?>" class="btn btn-success my-2 my-sm-0"><?php echo lang('core button create'); ?></a>
+          <a href="<?php echo base_url('user/select-account'); ?>" class="btn btn-success my-2 my-sm-0"><?php echo lang('core button create'); ?></a>
 					<?php endif; ?>
         </div>
 				

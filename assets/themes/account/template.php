@@ -216,9 +216,12 @@
 							<a href="<?php echo base_url('account/disputes'); ?>" class="list-group-item  d-flex justify-content-between align-items-center list-group-item-action <?php echo (uri_string() == 'account/disputes') ? 'active' : ''; ?>">
 							<?php echo lang('users menu dispute'); ?><span class="text-right"><i class="icon-shield icons"></i>
 							</a>
+							<?php	if ($this->user['account_type'] == 2) { ?>
+
 							<a href="<?php echo base_url('account/merchants'); ?>" class="list-group-item  d-flex justify-content-between align-items-center list-group-item-action <?php echo (uri_string() == 'account/merchants') ? 'active' : ''; ?>">
 							<?php echo lang('users shops merchant'); ?><span class="text-right"><i class="icon-basket icons"></i>
 							</a>
+							<?php } ?>
 							<a href="<?php echo base_url('account/support'); ?>" class="list-group-item  d-flex justify-content-between align-items-center list-group-item-action <?php echo (uri_string() == 'account/support') ? 'active' : ''; ?>">
 								<?php echo lang('users support title_1'); ?> <span class="text-right">
 								<?if($info_support == TRUE){?>

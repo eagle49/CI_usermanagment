@@ -131,6 +131,16 @@ $lang['users input first_name']               = "First Name";
 $lang['users input is_admin']                 = "Is Admin";
 $lang['users input language']                 = "Language";
 $lang['users input last_name']                = "Last Name";
+$lang['users input birthday']                 = "Date of Birthday";
+$lang['users input residential address']     = "Residential Address";
+$lang['users input postal code']              = "Postal Code";
+$lang['users input city']                     = "City";
+$lang['users input province']                 = "Province";
+$lang['users input phone number']             = "Phone Number";
+$lang['users input business address']         = "Business Address";
+$lang['users input business name']            = "Business Name";
+$lang['users input business phonenumber']            = "Business Phonenumber";
+
 $lang['users input password']                 = "Password";
 $lang['users input password_repeat']          = "Repeat Password";
 $lang['users input status']                   = "Status";

@@ -49,6 +49,9 @@ $lang['core button residential_address2'] = "Residential address line 2(optional
 $lang['core button postal_code']          = "Postal code";
 $lang['core button city']                 = "City";
 $lang['core button phone_type']           = "Phonenumber";
+$lang['core button business_name']        = "Business Name";
+$lang['core button business phonenumber'] = "Business Phonenumber";
+$lang['core button business address']     = "Business Address";
 
 // Text
 $lang['core text no']                    	= "No";
