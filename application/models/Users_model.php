@@ -199,7 +199,7 @@ class Users_model extends CI_Model {
             $salt            = hash('sha512', uniqid(mt_rand(1, mt_getrandmax()), TRUE));
             $password        = hash('sha512', $data['password'] . $salt);
             $validation_code = sha1(microtime(TRUE) . mt_rand(10000, 90000));
-            if ( $account_type ==1 ) {
+            if ( $account_type == 2 ) {
                 $sql = "
                     INSERT INTO {$this->_db} (
                         username,
